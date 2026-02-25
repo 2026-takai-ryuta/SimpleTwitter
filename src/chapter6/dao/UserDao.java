@@ -204,7 +204,7 @@ public class UserDao {
     	    " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
     	    PreparedStatement ps = null;
-    	    boolean isPasswordUpdate = !user.getPassword().trim().isEmpty();
+    	    boolean isPasswordUpdate = (user.getPassword() != null && !user.getPassword().trim().isEmpty());
 
     	    try {
     	        StringBuilder sql = new StringBuilder();

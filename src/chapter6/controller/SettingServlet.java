@@ -99,10 +99,17 @@ public class SettingServlet extends HttpServlet {
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
         User user = new User();
+        String pass = request.getParameter("password");
         user.setId(Integer.parseInt(request.getParameter("id")));
         user.setName(request.getParameter("name"));
         user.setAccount(request.getParameter("account"));
-        user.setPassword(request.getParameter("password"));
+        if (pass == null) {
+        	user.setPassword(null);
+        	} else if (pass.isEmpty()) {
+        	user.setPassword(null);
+        	} else {
+            user.setPassword(request.getParameter("password"));
+        	}
         user.setEmail(request.getParameter("email"));
         user.setDescription(request.getParameter("description"));
         return user;
