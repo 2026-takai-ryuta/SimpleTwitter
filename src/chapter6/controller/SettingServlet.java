@@ -67,13 +67,6 @@ public class SettingServlet extends HttpServlet {
         User user = getUser(request);
         if (isValid(user, errorMessages)) {
             try {
-            	 User result = new UserService().select(user.getAccount());
-                 if (result != null&& result.getId() != user.getId()) {
-                 	errorMessages.add("そのアカウント名は既に使われています");
-                 	request.setAttribute("errorMessages", errorMessages);
-                     request.getRequestDispatcher("setting.jsp").forward(request, response);
-                     return;
-                 }
                 new UserService().update(user);
             } catch (NoRowsUpdatedRuntimeException e) {
 		    log.warning("他の人によって更新されています。最新のデータを表示しました。データを確認してください。");
@@ -134,9 +127,14 @@ public class SettingServlet extends HttpServlet {
             errorMessages.add("アカウント名は20文字以下で入力してください");
         }
         if (StringUtils.isEmpty(email)) {
-		errorMessages.add("メールアドレスを入力してください");
-	  } else if (!StringUtils.isEmpty(email) && (50 < email.length())) {
+        	errorMessages.add("メールアドレスを入力してください");
+        } else if (!StringUtils.isEmpty(email) && (50 < email.length())) {
             errorMessages.add("メールアドレスは50文字以下で入力してください");
+        }
+
+    	User result = new UserService().select(user.getAccount());
+        if (result != null && result.getId() != user.getId()) {
+        	errorMessages.add("そのアカウント名は既に使われています");
         }
 
         if (errorMessages.size() != 0) {

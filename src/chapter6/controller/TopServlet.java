@@ -43,12 +43,12 @@ public class TopServlet extends HttpServlet {
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
         boolean isShowMessageForm = false;
-        String userId = request.getParameter("user_id");
         User user = (User) request.getSession().getAttribute("loginUser");
         if (user != null) {
             isShowMessageForm = true;
         }
 
+        String userId = request.getParameter("user_id");
         List<UserMessage> messages = new MessageService().select(userId);
 
         request.setAttribute("messages", messages);

@@ -63,14 +63,6 @@ public class SignUpServlet extends HttpServlet {
             return;
         }
 
-        User resurt = new UserService().select(user.getAccount());
-        if (resurt != null) {
-        	errorMessages.add("そのアカウント名は既に使われています");
-        	request.setAttribute("errorMessages", errorMessages);
-            request.getRequestDispatcher("signup.jsp").forward(request, response);
-            return;
-        }
-
         new UserService().insert(user);
         response.sendRedirect("./");
     }
@@ -117,8 +109,13 @@ public class SignUpServlet extends HttpServlet {
 
         if (StringUtils.isEmpty(email)) {
 		errorMessages.add("メールアドレスを入力してください");
-	  } else if (!StringUtils.isEmpty(email) && (50 < email.length())) {
+        } else if (!StringUtils.isEmpty(email) && (50 < email.length())) {
             errorMessages.add("メールアドレスは50文字以下で入力してください");
+        }
+
+        User resurt = new UserService().select(user.getAccount());
+        if (resurt != null) {
+        	errorMessages.add("そのアカウント名は既に使われています");
         }
 
         if (errorMessages.size() != 0) {

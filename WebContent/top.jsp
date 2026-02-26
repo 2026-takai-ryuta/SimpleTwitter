@@ -62,9 +62,19 @@
 										</span>
 						                <span class="name"><c:out value="${message.name}" /></span>
 						            </div>
-						            <div class="text"><c:out value="${message.text}" /></div>
+						            <div class="text" style="white-space: pre-wrap;"><c:out value="${message.text}" /></div>
 						            <div class="date"><fmt:formatDate value="${message.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" /></div>
-						        </div>
+						            <c:if test="${loginUser.id == message.userId}">
+						            <form action="edit" method="get"style="display: inline;">
+						            <input type="hidden" name="message_id" value="${message.id}">
+						            <input type="submit" value="編集">
+						            </form>
+						            <form action="deleteMessage" method="get" style="display: inline;">
+						            <input type="hidden" name="message_id" value="${message.id}">
+						            <input type="submit" value="削除" onclick="return confirm('本当に削除しますか？')">
+						            </form>
+						            </c:if>
+						       	 </div>
 						    </c:forEach>
 						</div>
             <div class="copyright"> Copyright(c)YourName</div>

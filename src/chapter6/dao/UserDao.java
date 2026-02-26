@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import chapter6.beans.User;
 import chapter6.exception.NoRowsUpdatedRuntimeException;
 import chapter6.exception.SQLRuntimeException;
@@ -204,7 +206,6 @@ public class UserDao {
     	    " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
     	    PreparedStatement ps = null;
-    	    boolean isPasswordUpdate = (user.getPassword() != null && !user.getPassword().trim().isEmpty());
 
     	    try {
     	        StringBuilder sql = new StringBuilder();
@@ -213,7 +214,7 @@ public class UserDao {
 	    	        sql.append("    account = ?, ");
 	    	        sql.append("    name = ?, ");
 	    	        sql.append("    email = ?, ");
-	    	        if (isPasswordUpdate == true) {
+	    	        if  (!StringUtils.isBlank(user.getPassword()))  {
 	    	        	sql.append("    password = ?, ");
 	    	        }
 	    	        sql.append("    description = ?, ");
@@ -221,16 +222,17 @@ public class UserDao {
 	    	        sql.append("WHERE id = ?");
 
 	    	        ps = connection.prepareStatement(sql.toString());
-	    	        int i = 1;
 
-	    	        ps.setString(i++, user.getAccount());
-	    	        ps.setString(i++, user.getName());
-	    	        ps.setString(i++, user.getEmail());
-	    	        if (isPasswordUpdate == true) {
-	    	        	ps.setString(i++, user.getPassword());
+	    	        ps.setString(1, user.getAccount());
+	    	        ps.setString(2, user.getName());
+	    	        ps.setString(3, user.getEmail());
+	    	        if (!StringUtils.isBlank(user.getPassword())) {
+	    	        	ps.setString(4, user.getPassword());
+	    	        	ps.setString(5, user.getDescription());
+	 	    	        ps.setInt(6, user.getId());
 	    	        }
-	    	        ps.setString(i++, user.getDescription());
-	    	        ps.setInt(i++, user.getId());
+	    	        ps.setString(4, user.getDescription());
+	    	        ps.setInt(5, user.getId());
 
     	        int count = ps.executeUpdate();
     	        if (count == 0) {
