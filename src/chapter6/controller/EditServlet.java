@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import chapter6.beans.User;
+import chapter6.beans.Message;
 import chapter6.beans.UserMessage;
 import chapter6.logging.InitApplication;
 import chapter6.service.MessageService;
@@ -45,21 +45,19 @@ public class EditServlet extends HttpServlet {
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
-	  User loginUser = (User) request.getSession().getAttribute("loginUser");
-      if (loginUser == null) {
-    	  response.sendRedirect("./");
-    	  return;
-      }
-
+	  Message message = null;
       String messageId = request.getParameter("message_id");
-      UserMessage message = new MessageService().getMessage(messageId);
+  	  if (!StringUtils.isBlank(messageId) && messageId.matches("^[0-9]+$")) {
+  	      message = new MessageService().selectMessage(messageId);
+  	  }
 
       List<String> errorMessages = new ArrayList<String>();
 
-      if (isValid(message, loginUser, errorMessages) == false) {
-    	  request.getSession().setAttribute("errorMessages", errorMessages);
-    	  response.sendRedirect("./");
-    	  return;
+      if (message == null) {
+    	  errorMessages.add("不正なパラメータが入力されました");
+		  request.getSession().setAttribute("errorMessages", errorMessages);
+		  response.sendRedirect("./");
+		  return;
       }
 
       request.setAttribute("editMessage", message);
@@ -93,15 +91,6 @@ public class EditServlet extends HttpServlet {
     	  request.getRequestDispatcher("edit.jsp").forward(request, response);
       }
 
-    }
-
-    private boolean isValid(UserMessage message, User loginUser, List<String> errorMessages)  {
-    	if (message == null) {
-    		errorMessages.add("不正なパラメータが入力されました");
-    		return false;
-    	}
-
-    	return true;
     }
 
     private boolean isValid(UserMessage message, List<String> errorMessages)  {

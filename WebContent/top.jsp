@@ -65,18 +65,42 @@
 						            <div class="text" style="white-space: pre-wrap;"><c:out value="${message.text}" /></div>
 						            <div class="date"><fmt:formatDate value="${message.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" /></div>
 						            <c:if test="${loginUser.id == message.userId}">
-						            <form action="edit" method="get"style="display: inline;">
-						            <input type="hidden" name="message_id" value="${message.id}">
-						            <input type="submit" value="編集">
-						            </form>
-						            <form action="deleteMessage" method="get" style="display: inline;">
-						            <input type="hidden" name="message_id" value="${message.id}">
-						            <input type="submit" value="削除" onclick="return confirm('本当に削除しますか？')">
-						            </form>
+							            <form action="edit" method="get"style="display: inline;">
+								            <input type="hidden" name="message_id" value="${message.id}">
+								            <input type="submit" value="編集">
+							            </form>
+							            <form action="deleteMessage" method="get" style="display: inline;">
+								            <input type="hidden" name="message_id" value="${message.id}">
+								            <input type="submit" value="削除" onclick="return confirm('本当に削除しますか？')">
+							            </form>
 						            </c:if>
 						       	 </div>
 						    </c:forEach>
 						</div>
+					<div class="form-area">
+					    <c:if test="${ isShowMessageForm }">
+					        <form action="comment" method="post">
+					            いま、どうしてる？<br />
+					            <textarea name="text" cols="100" rows="5" class="tweet-box"></textarea>
+					            <br />
+					            <input type="submit" value="返信">（140文字まで）
+					        </form>
+					    </c:if>
+					</div>
+					<div class="comments">
+						    <c:forEach items="${comments}" var="comment">
+						        <div class="comment">
+						            <div class="account-name">
+						                <span class="account">
+										    <a href="./?user_id=<c:out value="${comment.userId}"/> ">
+										        <c:out value="${comment.account}" />
+										    </a>
+										</span>
+						                <span class="name"><c:out value="${comment.name}" /></span>
+						            </div>
+						            <div class="text" style="white-space: pre-wrap;"><c:out value="${message.text}" /></div>
+						            <div class="date"><fmt:formatDate value="${message.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" /></div>
+						      </c:forEach>
             <div class="copyright"> Copyright(c)YourName</div>
         </div>
     </body>

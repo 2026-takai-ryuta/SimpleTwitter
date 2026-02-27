@@ -113,20 +113,16 @@ public class MessageService {
           }
       }
 
-    public UserMessage getMessage(String messageId){
+    public Message selectMessage(String messageId){
 
   	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
-
-  	  if (messageId == null || !messageId.matches("[0-9]+")) {
-  		  return null;
-  	  }
 
   	  Connection connection = null;
   	  try {
             connection = getConnection();
 	        int id = Integer.parseInt(messageId);
-	        UserMessage message = new MessageDao().select(connection, id);
+	        Message message = new MessageDao().select(connection, id);
 	        commit(connection);
 
 	        return message;
