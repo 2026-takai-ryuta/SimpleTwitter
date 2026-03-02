@@ -10,9 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import chapter6.beans.User;
 import chapter6.beans.UserMessage;
 import chapter6.logging.InitApplication;
+import chapter6.service.CommentService;
 import chapter6.service.MessageService;
 
 @WebServlet(urlPatterns = { "/index.jsp" })
@@ -42,15 +45,25 @@ public class TopServlet extends HttpServlet {
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
+	  	List<UserMessage> comments = new CommentService().select();
         boolean isShowMessageForm = false;
         User user = (User) request.getSession().getAttribute("loginUser");
         if (user != null) {
             isShowMessageForm = true;
         }
 
-        String userId = request.getParameter("user_id");
-        List<UserMessage> messages = new MessageService().select(userId);
+        String startDate = request.getParameter("start");
+        String endDate = request.getParameter("end");
+        String userIdStr = request.getParameter("user_id");
+        Integer userId = null;
 
+        if (userIdStr != null && !StringUtils.isBlank(userIdStr)) {
+            userId = Integer.parseInt(userIdStr);
+        }
+
+        List<UserMessage> messages = new MessageService().select(userId, startDate, endDate);
+
+        request.setAttribute("comments", comments);
         request.setAttribute("messages", messages);
         request.setAttribute("isShowMessageForm", isShowMessageForm);
         request.getRequestDispatcher("/top.jsp").forward(request, response);

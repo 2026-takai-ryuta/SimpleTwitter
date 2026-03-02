@@ -57,21 +57,30 @@ public class MessageService {
         }
     }
 
-    public List<UserMessage> select(String userId) {
+    public List<UserMessage> select(Integer userId, String startDate, String endDate) {
 
   	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
           final int LIMIT_NUM = 1000;
+          String start = null;
+          String end = null;
+          if (!(StringUtils.isBlank(startDate))) {
+        	  start = startDate + " 00:00:00";
+          } else {
+        	  start = "2020-01-01" + " 00:00:00";
+          }
+          if (!(StringUtils.isBlank(endDate))) {
+        	  end = endDate + " 00:00:00";
+          } else {
+        	  end = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()) + " 23:59:59";
+          }
 
           Connection connection = null;
           try {
               connection = getConnection();
-              Integer id = null;
-              if(!StringUtils.isBlank(userId)) {
-                  id = Integer.parseInt(userId);
-              }
-              List<UserMessage> messages = new UserMessageDao().select(connection, id, LIMIT_NUM);
+
+              List<UserMessage> messages = new UserMessageDao().select(connection, userId, LIMIT_NUM, start, end);
               commit(connection);
 
               return messages;
@@ -88,7 +97,7 @@ public class MessageService {
           }
       }
 
-    public void delete(String messageId){
+    public void delete(int id){
 
     	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
             " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -96,7 +105,6 @@ public class MessageService {
     	  Connection connection = null;
     	  try {
               connection = getConnection();
-	          int id = Integer.parseInt(messageId);
 	          new MessageDao().delete(connection, id);
 	          commit(connection);
 
@@ -113,7 +121,7 @@ public class MessageService {
           }
       }
 
-    public Message selectMessage(String messageId){
+    public Message select(int messageId){
 
   	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -121,8 +129,7 @@ public class MessageService {
   	  Connection connection = null;
   	  try {
             connection = getConnection();
-	        int id = Integer.parseInt(messageId);
-	        Message message = new MessageDao().select(connection, id);
+	        Message message = new MessageDao().select(connection, messageId);
 	        commit(connection);
 
 	        return message;
@@ -140,7 +147,7 @@ public class MessageService {
         }
     }
 
-    public void update(UserMessage message){
+    public void update(Message message){
 
   	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());

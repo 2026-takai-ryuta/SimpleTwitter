@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import chapter6.beans.Message;
-import chapter6.beans.UserMessage;
 import chapter6.logging.InitApplication;
 import chapter6.service.MessageService;
 
@@ -46,14 +45,14 @@ public class EditServlet extends HttpServlet {
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
 	  Message message = null;
-      String messageId = request.getParameter("message_id");
-  	  if (!StringUtils.isBlank(messageId) && messageId.matches("^[0-9]+$")) {
-  	      message = new MessageService().selectMessage(messageId);
+      String messageStrId = request.getParameter("message_id");
+  	  if (!StringUtils.isBlank(messageStrId) && messageStrId.matches("^[0-9]+$")) {
+	      int messageId = Integer.parseInt(messageStrId);
+  	      message = new MessageService().select(messageId);
   	  }
 
-      List<String> errorMessages = new ArrayList<String>();
-
       if (message == null) {
+    	  List<String> errorMessages = new ArrayList<String>();
     	  errorMessages.add("不正なパラメータが入力されました");
 		  request.getSession().setAttribute("errorMessages", errorMessages);
 		  response.sendRedirect("./");
@@ -75,26 +74,28 @@ public class EditServlet extends HttpServlet {
 	  String messageId = request.getParameter("message_id");
 	  String text = request.getParameter("text");
 
-	  UserMessage message = new UserMessage();
-	  message.setId(Integer.parseInt(messageId));
-	  message.setText(text);
+	  Message message = new Message();
+
 
 	  List<String> errorMessages = new ArrayList<String>();
 
-	  if (isValid(message, errorMessages)) {
-    	  new MessageService().update(message);
-    	  response.sendRedirect("./");
-    	  return;
-      } else {
+	  if (!(isValid(text, errorMessages))) {
+		  int id = Integer.parseInt(messageId);
+		  message = new MessageService().select(id);
     	  request.setAttribute("errorMessages", errorMessages);
     	  request.setAttribute("editMessage", message);
     	  request.getRequestDispatcher("edit.jsp").forward(request, response);
+    	  return;
       }
+
+	  message.setId(Integer.parseInt(messageId));
+	  message.setText(text);
+	  new MessageService().update(message);
+	  response.sendRedirect("./");
 
     }
 
-    private boolean isValid(UserMessage message, List<String> errorMessages)  {
-    	String text = message.getText();
+    private boolean isValid(String text, List<String> errorMessages)  {
 
     	if (StringUtils.isBlank(text)) {
     		errorMessages.add("入力してください");
