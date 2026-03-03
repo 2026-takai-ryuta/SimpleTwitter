@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import chapter6.beans.UserMessage;
+import chapter6.beans.UserComments;
 import chapter6.exception.SQLRuntimeException;
 import chapter6.logging.InitApplication;
 
@@ -32,7 +32,7 @@ public class UserCommentDao {
 
     }
 
-    public List<UserMessage> select(Connection connection) {
+    public List<UserComments> select(Connection connection, int num) {
 
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -51,13 +51,13 @@ public class UserCommentDao {
             sql.append("    users.account as account ");
             sql.append("FROM comments ");
             sql.append("INNER JOIN users ON comments.user_id = users.id ");
-            sql.append("ORDER BY created_date ASC");
+            sql.append("ORDER BY created_date ASC limit " + num);
 
             ps = connection.prepareStatement(sql.toString());
 
             ResultSet rs = ps.executeQuery();
 
-            List<UserMessage> comments = toComments(rs);
+            List<UserComments> comments = toUserComments(rs);
 
             return comments;
         } catch (SQLException e) {
@@ -68,15 +68,15 @@ public class UserCommentDao {
         }
     }
 
-    public List<UserMessage> toComments(ResultSet rs) {
+    public List<UserComments> toUserComments(ResultSet rs) {
 
     	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
     	          " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
-    	List<UserMessage> comments = new ArrayList<UserMessage>();
+    	List<UserComments> comments = new ArrayList<UserComments>();
     	try {
             while (rs.next()) {
-            	UserMessage comment = new UserMessage();
+            	UserComments comment = new UserComments();
             	comment.setId(rs.getInt("id"));
             	comment.setText(rs.getString("text"));
             	comment.setUserId(rs.getInt("user_id"));

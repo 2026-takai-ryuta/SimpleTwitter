@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 
-import chapter6.beans.Message;
+import chapter6.beans.Comments;
 import chapter6.beans.User;
 import chapter6.logging.InitApplication;
 import chapter6.service.CommentService;
@@ -56,16 +56,16 @@ public class CommentServlet extends HttpServlet {
           return;
       }
 
-      Message message = new Message();
-      message.setText(text);
+      Comments comments = new Comments();
+      comments.setText(text);
 
       String messageId = request.getParameter("message_id");
-      message.setMessageId(Integer.parseInt(messageId));
+      comments.setMessageId(Integer.parseInt(messageId));
 
       User user = (User) session.getAttribute("loginUser");
-      message.setUserId(user.getId());
+      comments.setUserId(user.getId());
 
-      new CommentService().insert(message);
+      new CommentService().insert(comments);
       response.sendRedirect("./");
   }
 

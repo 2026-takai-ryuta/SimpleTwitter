@@ -4,6 +4,8 @@ import static chapter6.utils.CloseableUtil.*;
 import static chapter6.utils.DBUtil.*;
 
 import java.sql.Connection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,25 +65,22 @@ public class MessageService {
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
           final int LIMIT_NUM = 1000;
-          String start = null;
-          String end = null;
-          if (!(StringUtils.isBlank(startDate))) {
-        	  start = startDate + " 00:00:00";
-          } else {
-        	  start = "2020-01-01" + " 00:00:00";
-          }
-          if (!(StringUtils.isBlank(endDate))) {
-        	  end = endDate + " 00:00:00";
-          } else {
-        	  end = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()) + " 23:59:59";
-          }
-
+          DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
           Connection connection = null;
           try {
               connection = getConnection();
+              if (!(StringUtils.isBlank(startDate))) {
+            	  startDate += " 00:00:00";
+              } else {
+            	  startDate = "2020-01-01" + " 00:00:00";
+              }
+              if (!(StringUtils.isBlank(endDate))) {
+            	  endDate += " 00:00:00";
+              } else {
+            	  endDate = dateFormat.format(new java.util.Date()) + " 23:59:59";
+              }
 
-              List<UserMessage> messages = new UserMessageDao().select(connection, userId, LIMIT_NUM, start, end);
-              commit(connection);
+              List<UserMessage> messages = new UserMessageDao().select(connection, userId, LIMIT_NUM, startDate, endDate);
 
               return messages;
           } catch (RuntimeException e) {

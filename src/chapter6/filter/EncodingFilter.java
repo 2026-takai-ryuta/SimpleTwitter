@@ -1,8 +1,6 @@
 package chapter6.filter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,11 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import chapter6.beans.User;
 
 @WebFilter("/*")
 public class EncodingFilter implements Filter {
@@ -29,30 +22,13 @@ public class EncodingFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-
 		if (request.getCharacterEncoding() == null) {
 			request.setCharacterEncoding(encoding);
 		}
-
-		HttpSession session = httpRequest.getSession();
-        User loginUser = (User) session.getAttribute("loginUser");
-
-        String servletPath = httpRequest.getServletPath();
-
-        if (loginUser != null || servletPath.equals("/index.jsp") || servletPath.equals("/login") || servletPath.equals("/signup") || servletPath.startsWith("/css/")) {
-        	chain.doFilter(request, response); // サーブレットを実行
-        } else {
-        	List<String> errorMessages = new ArrayList<>();
-        	errorMessages.add("ログインをしてください");
-
-        	session.setAttribute("errorMessages", errorMessages);
-
-        	httpResponse.sendRedirect("login");
-        	return;
-        }
+		System.out.println("EncodingFilter# 文字エンコーディングを設定しました。");
+		// サーブレットを実行
+		chain.doFilter(request, response);
+		System.out.println("EncodingFilter# chain.doFilterが実行されました。");
 	}
 
 	@Override
@@ -70,5 +46,7 @@ public class EncodingFilter implements Filter {
 	@Override
 	public void destroy() {
 	}
+
+
 
 }

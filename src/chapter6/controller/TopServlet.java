@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import chapter6.beans.User;
+import chapter6.beans.UserComments;
 import chapter6.beans.UserMessage;
 import chapter6.logging.InitApplication;
 import chapter6.service.CommentService;
@@ -45,7 +46,6 @@ public class TopServlet extends HttpServlet {
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
-	  	List<UserMessage> comments = new CommentService().select();
         boolean isShowMessageForm = false;
         User user = (User) request.getSession().getAttribute("loginUser");
         if (user != null) {
@@ -62,7 +62,10 @@ public class TopServlet extends HttpServlet {
         }
 
         List<UserMessage> messages = new MessageService().select(userId, startDate, endDate);
+        List<UserComments> comments = new CommentService().select();
 
+        request.setAttribute("startDate", startDate);
+        request.setAttribute("endDate", endDate);
         request.setAttribute("comments", comments);
         request.setAttribute("messages", messages);
         request.setAttribute("isShowMessageForm", isShowMessageForm);

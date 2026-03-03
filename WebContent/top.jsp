@@ -44,8 +44,8 @@
 					<div class="filter-area">
 					    <form action="./" method="get">
 					        日付：
-					        <input type="date" name="start" value="${param.start_date}"> 〜
-					        <input type="date" name="end" value="${param.end_date}">
+					        <input type="date" name="start" value="${start_date}"> 〜
+					        <input type="date" name="end" value="${end_date}">
 					        <input type="submit" value="絞り込み">
 					    </form>
 					</div>

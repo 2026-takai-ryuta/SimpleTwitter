@@ -53,7 +53,7 @@ public class UserMessageDao {
             sql.append("ON messages.user_id = users.id ");
             sql.append("WHERE messages.created_date BETWEEN ? AND ? ");
             if (id != null) {
-            	sql.append("AND messages.user_id = ? AND");
+            	sql.append("AND messages.user_id = ? ");
             }
             sql.append("ORDER BY created_date DESC limit " + num);
 

@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import chapter6.beans.Message;
-import chapter6.beans.UserMessage;
+import chapter6.beans.Comments;
+import chapter6.beans.UserComments;
 import chapter6.dao.CommentDao;
 import chapter6.dao.UserCommentDao;
 import chapter6.logging.InitApplication;
@@ -32,7 +32,7 @@ public class CommentService {
 
     }
 
-    public void insert(Message message) {
+    public void insert(Comments comments) {
 
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -40,7 +40,7 @@ public class CommentService {
       Connection connection = null;
       try {
           connection = getConnection();
-          new CommentDao().insert(connection, message);
+          new CommentDao().insert(connection, comments);
           commit(connection);
       } catch (RuntimeException e) {
           rollback(connection);
@@ -55,15 +55,16 @@ public class CommentService {
       }
   }
 
-    public List<UserMessage> select(){
+    public List<UserComments> select(){
 
     	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
             " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
+    	  final int LIMIT_NUM = 1000;
     	  Connection connection = null;
     	  try {
-              connection = getConnection();
-            List<UserMessage> comments = new UserCommentDao().select(connection);
+            connection = getConnection();
+            List<UserComments> comments = new UserCommentDao().select(connection, LIMIT_NUM);
   	        commit(connection);
 
   	        return comments;
