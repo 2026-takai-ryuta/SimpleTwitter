@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import chapter6.beans.UserComments;
+import chapter6.beans.UserComment;
 import chapter6.exception.SQLRuntimeException;
 import chapter6.logging.InitApplication;
 
@@ -32,7 +32,7 @@ public class UserCommentDao {
 
     }
 
-    public List<UserComments> select(Connection connection, int num) {
+    public List<UserComment> select(Connection connection, int num) {
 
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -57,7 +57,7 @@ public class UserCommentDao {
 
             ResultSet rs = ps.executeQuery();
 
-            List<UserComments> comments = toUserComments(rs);
+            List<UserComment> comments = toUserComments(rs);
 
             return comments;
         } catch (SQLException e) {
@@ -68,15 +68,15 @@ public class UserCommentDao {
         }
     }
 
-    public List<UserComments> toUserComments(ResultSet rs) {
+    public List<UserComment> toUserComments(ResultSet rs) {
 
     	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
     	          " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
-    	List<UserComments> comments = new ArrayList<UserComments>();
+    	List<UserComment> comments = new ArrayList<UserComment>();
     	try {
             while (rs.next()) {
-            	UserComments comment = new UserComments();
+            	UserComment comment = new UserComment();
             	comment.setId(rs.getInt("id"));
             	comment.setText(rs.getString("text"));
             	comment.setUserId(rs.getInt("user_id"));

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import chapter6.beans.Comments;
+import chapter6.beans.Comment;
 import chapter6.exception.SQLRuntimeException;
 import chapter6.logging.InitApplication;
 
@@ -30,7 +30,7 @@ public class CommentDao {
 
     }
 
-    public void insert(Connection connection, Comments comments) {
+    public void insert(Connection connection, Comment comment) {
 
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -54,9 +54,9 @@ public class CommentDao {
 
             ps = connection.prepareStatement(sql.toString());
 
-            ps.setInt(1, comments.getUserId());
-            ps.setString(2, comments.getText());
-            ps.setInt(3, comments.getMessageId());
+            ps.setInt(1, comment.getUserId());
+            ps.setString(2, comment.getText());
+            ps.setInt(3, comment.getMessageId());
 
             ps.executeUpdate();
         } catch (SQLException e) {

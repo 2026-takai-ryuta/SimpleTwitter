@@ -77,7 +77,7 @@ public class MessageService {
               if (!(StringUtils.isBlank(endDate))) {
             	  endDate += " 00:00:00";
               } else {
-            	  endDate = dateFormat.format(new java.util.Date()) + " 23:59:59";
+            	  endDate = dateFormat.format(new java.util.Date());
               }
 
               List<UserMessage> messages = new UserMessageDao().select(connection, userId, LIMIT_NUM, startDate, endDate);

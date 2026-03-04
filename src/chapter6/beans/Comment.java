@@ -3,7 +3,7 @@ package chapter6.beans;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Comments implements Serializable {
+public class Comment implements Serializable {
 
     private int id;
     private int userId;
