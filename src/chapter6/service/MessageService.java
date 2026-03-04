@@ -75,7 +75,7 @@ public class MessageService {
             	  startDate = "2020-01-01" + " 00:00:00";
               }
               if (!(StringUtils.isBlank(endDate))) {
-            	  endDate += " 00:00:00";
+            	  endDate += "23:59:59";
               } else {
             	  endDate = dateFormat.format(new java.util.Date());
               }
